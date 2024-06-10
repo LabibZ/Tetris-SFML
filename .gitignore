@@ -1,0 +1,35 @@
+# Build artifacts
+x64/
+Debug/
+Release/
+build/
+cmake-build-*
+*.o
+*.d
+*.exe
+*.dll
+*.lib
+*.a
+*.so
+*.dylib
+*.app
+
+# IDE/editor files
+.vscode/
+.idea/
+.vs/
+*.suo
+*.user
+*.sln.docstates
+
+# Project-specific files (adjust as needed)
+*.userprefs
+
+# Miscellaneous
+*.log
+*.tmp
+*~
+.DS_Store
+
+# Avoid ignoring essential project files
+!CMakeLists.txt
