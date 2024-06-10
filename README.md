@@ -29,7 +29,7 @@
   <img src="https://i.imgur.com/gkGvoSm.png" alt="Project Banner">
   </br>
   
-  <a href="https://car-showcase-delta-nine.vercel.app/">View Demo</a>
+  <!--a href="https://car-showcase-delta-nine.vercel.app/">View Youtube Demo</!--a> -->
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -77,7 +77,7 @@ This is an example of how to list things you need to use the software and how to
    ```
 2. Follow SFML installation procedure -- [Youtube](https://www.youtube.com/watch?v=lFzpkvrscs4)
 
-3. Run the project directly from Visual Studio 2022
+3. Run the project directly from Visual Studio 2022 and enjoy!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
