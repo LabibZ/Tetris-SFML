@@ -22,7 +22,7 @@ int figures[7][4] =
 	2,3,4,5, // O
 };
 
-bool check()
+bool collision_check()
 {
 	for (int i = 0; i < 4; i++) {
 		if (a[i].x < 0 || a[i].x >= width || a[i].y >= height) return 0;
@@ -31,13 +31,27 @@ bool check()
 	return 1;
 }
 
+void line_check()
+{
+	int k = height - 1;
+	for (int i = height - 1; i > 0; i--)
+	{
+		int count = 0;
+		for (int j = 0; j < width; j++) {
+			if (field[i][j]) count++;
+			field[k][j] = field[i][j];
+		}
+		if (count < width) k--;
+	}
+}
+
 void move(int dx) 
 {
 	for (int i = 0; i < 4; i++) {
 		b[i] = a[i];
 		a[i].x += dx;
 	}
-	if (!check()) {
+	if (!collision_check()) {
 		for (int i = 0; i < 4; i++) {
 			a[i] = b[i];
 		}
@@ -53,7 +67,7 @@ void rotate()
 		a[i].x = p.x - x;
 		a[i].y = p.y + y;
 	}
-	if (!check()) {
+	if (!collision_check()) {
 		for (int i = 0; i < 4; i++) {
 			a[i] = b[i];
 		}
@@ -65,11 +79,12 @@ int main()
 	srand(time(0));
 	RenderWindow window(VideoMode(320, 480), "Tetris");
 	
-	Texture t;
-	t.loadFromFile("include/images/tiles.png");
+	Texture t1, t2, t3;
+	t1.loadFromFile("include/images/tiles.png");
+	t2.loadFromFile("include/images/background.png");
+	t3.loadFromFile("include/images/frame.png");
 
-	Sprite s(t);
-	s.setTextureRect(IntRect(0, 0, 18, 18));
+	Sprite s(t1), background(t2), frame(t3);
 
 	int dx = 0;
 	bool isRotate = false;
@@ -96,37 +111,66 @@ int main()
 				else if (e.key.code == Keyboard::Right) dx = 1;
 			}
 		}
-		// move
+		if (Keyboard::isKeyPressed(Keyboard::Down))
+			delay = 0.05f;
+
 		move(dx);
-		// rotate
+
 		if (isRotate)
 			rotate();
 		// tick
 		if (timer > delay)
 		{
+			// piece falls down
 			for (int i = 0; i < 4; i++) {
 				b[i] = a[i];
 				a[i].y += 1;
 			}
+
+			if (!collision_check())
+			{
+				for (int i = 0; i < 4; i++)
+					field[b[i].y][b[i].x] = colorNum;
+
+				colorNum = 1 + rand() % 7;
+				int n = rand() % 7;
+				for (int i = 0; i < 4; i++) {
+					a[i].x = figures[n][i] % 2;
+					a[i].y = figures[n][i] / 2;
+				}
+			}
+
 			timer = 0;
 		}
 
-		int n = 3; // figure
-		if (a[0].x==0)
-		for (int i = 0; i < 4; i++) {
-			a[i].x = figures[n][i] % 2;
-			a[i].y = figures[n][i] / 2;
-		}
+		line_check();
 
+		// reset
 		dx = 0;
 		isRotate = false;
+		delay = 0.3;
 
-
+		// draw
 		window.clear(Color::White);
+		window.draw(background);
+
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				if (field[i][j] == 0) continue;
+				s.setTextureRect(IntRect(field[i][j] * 18, 0, 18, 18));
+				s.setPosition(j * 18, i * 18);
+				s.move(28, 31); //offset
+				window.draw(s);
+			}
+		}
+
 		for (int i = 0; i < 4; i++) {
+			s.setTextureRect(IntRect(colorNum * 18, 0, 18, 18));
 			s.setPosition(a[i].x * 18, a[i].y * 18);
+			s.move(28, 31); //offset
 			window.draw(s);
 		}
+		window.draw(frame);
 		window.display();
 	}
 
